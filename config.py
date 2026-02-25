@@ -22,7 +22,7 @@ HMI_TYPE = "NEOPROJ"
 # =============================================================================
 
 # CPA (PanelBuilder / CIMREX)
-CPA_FILE = "K130.cpa"
+CPA_FILE = ""
 
 # NeoProj (IX Developer) — .zip file or folder name
 NEOPROJ_FILE = "V100C.zip"
@@ -32,8 +32,8 @@ TAGS_EXPORT_FILE = ""       # e.g. "NU_36B_4B_TS_Tags Export.xls"
 ALARMS_EXPORT_FILE = ""     # e.g. "NU_36B_4B_TS_Alarms Export.xls"
 
 # Rockwell exports (optional — set to "" to disable)
-CSV_FILE = "LACT_20B.CSV"
-L5K_FILE = "LACT_20B.L5K"
+CSV_FILE = ""
+L5K_FILE = ""
 
 # =============================================================================
 # OUTPUT FILES

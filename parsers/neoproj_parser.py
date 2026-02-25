@@ -405,9 +405,18 @@ def process_tags_data(tags_df, alarms_df, tag_screens):
         address = str(row.get('Address', ''))
         description = str(row.get('Description', '')) if pd.notna(row.get('Description')) else ''
 
-        # Fall back to alarm text if no description
+        # Fall back 1: alarm text
         if not description and name in alarm_lookup:
             description = alarm_lookup[name]
+
+        # Fall back 2: derive description from HMI tag name itself
+        # e.g. "Controller1_PIT_100_POOL_SEPARATOR_V100_DISCH_PRESS"
+        #   →  "PIT 100 POOL SEPARATOR V100 DISCH PRESS"
+        desc_source = 'Tags_Export' if description else ''
+        if not description and name and name != 'nan':
+            derived = re.sub(r'^Controller\d+_', '', name).replace('_', ' ')
+            description = derived
+            desc_source = 'HMI_Tag_Name'
 
         screens = tag_screens.get(name, set())
 
@@ -420,7 +429,7 @@ def process_tags_data(tags_df, alarms_df, tag_screens):
             'target_units':        extract_unit_from_description(description),
             'rack_description':    '',
             'Description':         description,
-            'Description Source':  'Tags_Export' if description else '',
+            'Description Source':  desc_source,
             'Number of Screens':   len(screens),
             'Screens':             ', '.join(sorted(screens)),
         })
