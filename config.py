@@ -15,25 +15,25 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # =============================================================================
 # HMI TYPE — Choose one: "CPA" or "NEOPROJ"
 # =============================================================================
-HMI_TYPE = "CPA"
+HMI_TYPE = "NEOPROJ"
 
 # =============================================================================
 # INPUT FILES
 # =============================================================================
 
 # CPA (PanelBuilder / CIMREX)
-CPA_FILE = "NU_TF_1C_6D.cpa"
+CPA_FILE = "K130.cpa"
 
 # NeoProj (IX Developer) — .zip file or folder name
-NEOPROJ_FILE = ".zip"
+NEOPROJ_FILE = "V100C.zip"
 
 # IX Developer Export Files (optional, auto-detected if empty)
 TAGS_EXPORT_FILE = ""       # e.g. "NU_36B_4B_TS_Tags Export.xls"
 ALARMS_EXPORT_FILE = ""     # e.g. "NU_36B_4B_TS_Alarms Export.xls"
 
 # Rockwell exports (optional — set to "" to disable)
-CSV_FILE = ""               # e.g. "NU_TF_20B.CSV"
-L5K_FILE = ""               # e.g. "NU_TF_20B.L5K"
+CSV_FILE = "LACT_20B.CSV"
+L5K_FILE = "LACT_20B.L5K"
 
 # =============================================================================
 # OUTPUT FILES
@@ -60,8 +60,8 @@ FINAL_MTL_PATH = os.path.join(OUTPUT_DIR, FINAL_MTL_FILE)
 # =============================================================================
 # PROCESSING OPTIONS
 # =============================================================================
-ENABLE_CSV = True
-ENABLE_L5K = True
+ENABLE_CSV = False
+ENABLE_L5K = False
 FILTER_UNUSED_IOS = False   # Remove tags not used in any screen
 
 # Text processing

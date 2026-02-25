@@ -286,12 +286,18 @@ def convert_to_mtl(input_path, output_path):
     
     df_mtl = df_mtl.sort_values(['target_id', 'sort_order'])
     df_mtl = df_mtl.drop('sort_order', axis=1)
-    
+
+    # Insert 'delete' column between G (iconics_plc_path) and H (target_description)
+    insert_pos = df_mtl.columns.get_loc('target_description')
+    df_mtl.insert(insert_pos, 'delete', '')
+
     print(f"\nSaving MTL: {output_path}")
     with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
         df_mtl.to_excel(writer, sheet_name='MASTER TAG LIST', index=False)
         
         worksheet = writer.sheets['MASTER TAG LIST']
+
+        # Column widths — H agora é 'delete', I em diante deslocadas
         worksheet.column_dimensions['A'].width = 15
         worksheet.column_dimensions['B'].width = 12
         worksheet.column_dimensions['C'].width = 50
@@ -299,10 +305,17 @@ def convert_to_mtl(input_path, output_path):
         worksheet.column_dimensions['E'].width = 25
         worksheet.column_dimensions['F'].width = 30
         worksheet.column_dimensions['G'].width = 35
-        worksheet.column_dimensions['H'].width = 60
-        worksheet.column_dimensions['I'].width = 20
-        worksheet.column_dimensions['J'].width = 80
-    
+        worksheet.column_dimensions['H'].width = 12   # delete
+        worksheet.column_dimensions['I'].width = 60   # target_description
+        worksheet.column_dimensions['J'].width = 20   # description_source
+        worksheet.column_dimensions['K'].width = 80   # screens
+
+        # Auto-filter no cabeçalho
+        worksheet.auto_filter.ref = worksheet.dimensions
+
+        # Freeze primeira linha
+        worksheet.freeze_panes = 'A2'
+
     print(f"  -> Saved: {output_path}")
     
     print("\n" + "="*80)

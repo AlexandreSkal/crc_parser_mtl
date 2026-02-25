@@ -205,3 +205,14 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# =============================================================================
+# PROJECT DATA — input/output files never go to the repo
+# =============================================================================
+
+# Ignore all files inside data/input and data/output
+# but keep the empty folders tracked via .gitkeep
+data/input/*
+data/output/*
+!data/input/.gitkeep
+!data/output/.gitkeep
