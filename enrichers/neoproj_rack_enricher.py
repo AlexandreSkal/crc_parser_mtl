@@ -15,6 +15,29 @@ from utils.neoproj_zip import extract_neoproj_zip
 
 
 # =============================================================================
+# PROJECT DIR DETECTION
+# =============================================================================
+
+def _find_project_dir(root):
+    """
+    Given the root of an extracted NeoProj ZIP, return the directory that
+    actually contains the project files (.xaml / .neo).
+
+    Some ZIPs have all files at root level; others wrap them in a single
+    subfolder. The Symbols/ folder (images only) must not be mistaken for
+    the project dir.
+    """
+    if glob.glob(os.path.join(root, '*.xaml')) or glob.glob(os.path.join(root, '*.neo')):
+        return root
+    for entry in sorted(os.listdir(root)):
+        full = os.path.join(root, entry)
+        if os.path.isdir(full):
+            if glob.glob(os.path.join(full, '*.xaml')) or glob.glob(os.path.join(full, '*.neo')):
+                return full
+    return root
+
+
+# =============================================================================
 # XAML RACK PARSER
 # =============================================================================
 
@@ -152,8 +175,7 @@ def enrich_from_neoproj_rack(df, neoproj_path):
         if neoproj_path.lower().endswith('.zip'):
             temp_dir = tempfile.mkdtemp(prefix='neoproj_enrich_')
             extract_neoproj_zip(neoproj_path, temp_dir)
-            subdirs = [d for d in os.listdir(temp_dir) if os.path.isdir(os.path.join(temp_dir, d))]
-            project_dir = os.path.join(temp_dir, subdirs[0]) if subdirs else temp_dir
+            project_dir = _find_project_dir(temp_dir)  # ← fixed: was taking first subdir blindly
         elif os.path.isdir(neoproj_path):
             project_dir = neoproj_path
 

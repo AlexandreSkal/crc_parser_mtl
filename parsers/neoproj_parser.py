@@ -440,6 +440,27 @@ def process_tags_data(tags_df, alarms_df, tag_screens):
 # MAIN ENTRY POINT
 # =============================================================================
 
+def _find_project_dir(root):
+    """
+    Given the root of an extracted NeoProj ZIP, return the directory that
+    actually contains the project files (.xaml / .neo).
+
+    Some ZIPs have all files at root level; others wrap them in a single
+    subfolder. The Symbols/ folder (images only) must not be mistaken for
+    the project dir.
+    """
+    # Root itself has project files?
+    if glob.glob(os.path.join(root, '*.xaml')) or glob.glob(os.path.join(root, '*.neo')):
+        return root
+    # Check one level of subdirectories
+    for entry in sorted(os.listdir(root)):
+        full = os.path.join(root, entry)
+        if os.path.isdir(full):
+            if glob.glob(os.path.join(full, '*.xaml')) or glob.glob(os.path.join(full, '*.neo')):
+                return full
+    return root  # fallback
+
+
 def extract_from_neoproj(neoproj_path, input_dir, tags_export_path=None,
                           alarms_export_path=None, filter_unused=False):
     """
@@ -477,9 +498,7 @@ def extract_from_neoproj(neoproj_path, input_dir, tags_export_path=None,
             if neoproj_path.lower().endswith('.zip'):
                 zip_temp_dir = tempfile.mkdtemp(prefix='neoproj_extract_')
                 extract_neoproj_zip(neoproj_path, zip_temp_dir)
-                subdirs = [d for d in os.listdir(zip_temp_dir)
-                           if os.path.isdir(os.path.join(zip_temp_dir, d))]
-                project_dir = os.path.join(zip_temp_dir, subdirs[0]) if subdirs else zip_temp_dir
+                project_dir = _find_project_dir(zip_temp_dir)
             else:
                 project_dir = neoproj_path
 
